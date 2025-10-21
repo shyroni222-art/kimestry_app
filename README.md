@@ -9,7 +9,7 @@ This is the main repository for Kimestry - an LLM-powered schema and column matc
 The project is organized into two main parts:
 
 - `backend/` - Contains the Python FastAPI application and all backend services
-- `frontend/` - Reserved for the frontend application (to be implemented)
+- `frontend/` - Contains the React frontend application with pipeline benchmark leaderboard
 
 ## Backend
 
@@ -25,11 +25,28 @@ For detailed backend documentation, see [backend/README.md](backend/README.md) a
 
 ## Frontend
 
-The frontend is planned to provide:
-- A dashboard for monitoring pipeline results
-- A leaderboard of pipeline benchmarks
-- User interface for running pipelines
-- Data visualization tools
+The frontend is built with React and provides:
+- A beautiful, responsive leaderboard of pipeline benchmarks
+- Real-time updating of benchmark metrics
+- Interactive charts and visualizations
+- Performance statistics for all pipelines
+- Auto-refreshing data from the backend API
+
+### Features
+- Real-time leaderboard with pipeline rankings
+- Accuracy metrics visualization
+- Auto-refreshing data (every 30 seconds)
+- Responsive design for all screen sizes
+- Beautiful animations and transitions
+- Performance statistics breakdown
+
+### Setup
+1. Navigate to the `frontend/` directory
+2. Install dependencies: `npm install`
+3. Start the development server: `npm start`
+
+### Configuration
+The frontend connects to the backend API at http://localhost:8000 by default. To change this, update the `API_BASE_URL` constant in `frontend/src/App.js`.
 
 ## Setup
 
@@ -39,7 +56,10 @@ The frontend is planned to provide:
 3. Follow the backend-specific setup instructions in [backend/README.md](backend/README.md)
 
 ### Frontend Setup
-Instructions will be added when the frontend is implemented.
+1. Navigate to the `frontend/` directory
+2. Install dependencies: `npm install`
+3. Start the development server: `npm start`
+4. The frontend will be available at http://localhost:3000
 
 ## Running the Application
 
@@ -47,6 +67,12 @@ Instructions will be added when the frontend is implemented.
 1. Go to the `backend/` directory
 2. Use the easy testing script: `python run_kimestry.py run`
 3. Or start the server manually: `uvicorn src.main:app --host 0.0.0.0 --port 8000 --reload`
+
+### Frontend
+1. Go to the `frontend/` directory
+2. Install dependencies: `npm install`
+3. Start the development server: `npm start`
+4. The frontend will automatically open in your browser at http://localhost:3000
 
 ## Contributing
 
