@@ -1,0 +1,20 @@
+[
+  {
+    "original_column": "full_name",
+    "fitted_column": "username",
+    "fitted_schema": "User Data",
+    "explanation": "Column 'full_name' maps to 'username' field in User Data schema based on mapping history."
+  },
+  {
+    "original_column": "contact_email",
+    "fitted_column": "email",
+    "fitted_schema": "User Data",
+    "explanation": "Column 'contact_email' maps to 'email' field in User Data schema based on mapping history."
+  },
+  {
+    "original_column": "status",
+    "fitted_column": "account_status",
+    "fitted_schema": "User Data",
+    "explanation": "Column 'status' maps to 'account_status' field in User Data schema based on mapping history."
+  }
+]

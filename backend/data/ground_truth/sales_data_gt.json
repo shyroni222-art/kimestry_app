@@ -1,0 +1,26 @@
+[
+  {
+    "original_column": "product_name",
+    "fitted_column": "product_name",
+    "fitted_schema": "Product Data",
+    "explanation": "Column 'product_name' maps directly to 'product_name' field in Product Data schema."
+  },
+  {
+    "original_column": "product_price",
+    "fitted_column": "price",
+    "fitted_schema": "Product Data",
+    "explanation": "Column 'product_price' maps to 'price' field in Product Data schema based on mapping history."
+  },
+  {
+    "original_column": "sales_date",
+    "fitted_column": "",
+    "fitted_schema": "",
+    "explanation": "Column 'sales_date' does not have a direct match in the Product Data schema."
+  },
+  {
+    "original_column": "customer_id",
+    "fitted_column": "sku",
+    "fitted_schema": "Product Data",
+    "explanation": "Column 'customer_id' maps to 'sku' field in Product Data schema based on mapping history."
+  }
+]

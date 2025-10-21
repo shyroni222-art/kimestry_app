@@ -1,0 +1,26 @@
+[
+  {
+    "original_column": "item_code",
+    "fitted_column": "item_code",
+    "fitted_schema": "Inventory Data",
+    "explanation": "Column 'item_code' maps directly to 'item_code' field in Inventory Data schema."
+  },
+  {
+    "original_column": "item_name",
+    "fitted_column": "item_name",
+    "fitted_schema": "Inventory Data",
+    "explanation": "Column 'item_name' maps directly to 'item_name' field in Inventory Data schema."
+  },
+  {
+    "original_column": "stock_qty",
+    "fitted_column": "stock_quantity",
+    "fitted_schema": "Inventory Data",
+    "explanation": "Column 'stock_qty' maps to 'stock_quantity' field in Inventory Data schema based on mapping history."
+  },
+  {
+    "original_column": "reorder_level",
+    "fitted_column": "reorder_level",
+    "fitted_schema": "Inventory Data",
+    "explanation": "Column 'reorder_level' maps directly to 'reorder_level' field in Inventory Data schema."
+  }
+]

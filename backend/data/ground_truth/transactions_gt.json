@@ -1,0 +1,20 @@
+[
+  {
+    "original_column": "transaction_id",
+    "fitted_column": "transaction_id",
+    "fitted_schema": "Transaction Data",
+    "explanation": "Column 'transaction_id' maps directly to 'transaction_id' field in Transaction Data schema."
+  },
+  {
+    "original_column": "trans_amount",
+    "fitted_column": "amount",
+    "fitted_schema": "Transaction Data",
+    "explanation": "Column 'trans_amount' maps to 'amount' field in Transaction Data schema based on mapping history."
+  },
+  {
+    "original_column": "payment_type",
+    "fitted_column": "payment_method",
+    "fitted_schema": "Transaction Data",
+    "explanation": "Column 'payment_type' maps to 'payment_method' field in Transaction Data schema based on mapping history."
+  }
+]

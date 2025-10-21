@@ -109,9 +109,7 @@ venv.bak/
 .idea/
 
 # Data directories
-backend/data/excels/*
 backend/data/results/*
-backend/data/ground_truth/*
 backend/logs/*
 
 # Environment variables (if any config files exist)

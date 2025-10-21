@@ -1,0 +1,26 @@
+[
+  {
+    "original_column": "user_name",
+    "fitted_column": "username",
+    "fitted_schema": "User Data",
+    "explanation": "Column 'user_name' maps to 'username' field in User Data schema based on mapping history."
+  },
+  {
+    "original_column": "email_addr",
+    "fitted_column": "email",
+    "fitted_schema": "User Data",
+    "explanation": "Column 'email_addr' maps to 'email' field in User Data schema based on mapping history."
+  },
+  {
+    "original_column": "user_status",
+    "fitted_column": "account_status",
+    "fitted_schema": "User Data",
+    "explanation": "Column 'user_status' maps to 'account_status' field in User Data schema based on mapping history."
+  },
+  {
+    "original_column": "account_balance",
+    "fitted_column": "amount",
+    "fitted_schema": "Transaction Data",
+    "explanation": "Column 'account_balance' does not have a direct match in the User Data schema."
+  }
+]
