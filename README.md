@@ -34,11 +34,14 @@ The frontend is built with React and provides:
 
 ### Features
 - Real-time leaderboard with pipeline rankings
-- Accuracy metrics visualization
+- Accuracy metrics visualization (column+schema accuracy and schema accuracy)
 - Auto-refreshing data (every 30 seconds)
 - Responsive design for all screen sizes
 - Beautiful animations and transitions
 - Performance statistics breakdown
+- Pipeline detail pages showing correct vs incorrect results
+- Search functionality for pipelines
+- Interactive navigation between leaderboard and pipeline details
 
 ### Setup
 1. Navigate to the `frontend/` directory
@@ -63,16 +66,36 @@ The frontend connects to the backend API at http://localhost:8000 by default. To
 
 ## Running the Application
 
-### Backend
+### Development Mode (Separate Processes)
+For development, you can run the backend and frontend separately:
+
+#### Backend
 1. Go to the `backend/` directory
 2. Use the easy testing script: `python run_kimestry.py run`
 3. Or start the server manually: `uvicorn src.main:app --host 0.0.0.0 --port 8000 --reload`
+4. Or use the development script: `python run_development.py`
 
-### Frontend
+#### Frontend
 1. Go to the `frontend/` directory
 2. Install dependencies: `npm install`
 3. Start the development server: `npm start`
 4. The frontend will automatically open in your browser at http://localhost:3000
+
+### Docker Mode (Recommended for Production)
+For the full application stack including proxy configuration:
+
+```bash
+# From the project root directory
+docker-compose up --build
+```
+
+The application will be available at http://localhost
+
+### Environment Configuration
+The application uses environment variables for configuration. For development, you can:
+- Set environment variables directly
+- Use the provided `.env` file by copying it to your environment
+- The application will use sensible defaults if variables are not set
 
 ## Contributing
 

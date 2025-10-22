@@ -59,22 +59,17 @@ def calculate_nothing_compatible_accuracy(predicted: MatchResultsModel, expected
 
 def calculate_metrics_for_results(results: List[Dict[str, Any]], ground_truth: List[MatchResultsModel]) -> Dict[str, float]:
     """
-    Calculate all metrics for a set of results against ground truth
+    Calculate metrics for a set of results against ground truth - keeping only column+schema accuracy and schema accuracy
     """
     if not results or not ground_truth:
         return {
-            "accuracy": 0.0,
-            "schema_accuracy": 0.0,
-            "column_accuracy": 0.0,
-            "env_accuracy": 0.0,  # This would need environment-specific data
-            "nothing_compatible_accuracy": 0.0
+            "accuracy": 0.0,  # This is column+schema accuracy
+            "schema_accuracy": 0.0
         }
     
     total_predictions = len(results)
-    accuracy_count = 0
+    accuracy_count = 0  # This is column+schema accuracy
     schema_accuracy_count = 0
-    column_accuracy_count = 0
-    nothing_compatible_count = 0
     
     # Create a mapping of original columns to ground truth for easier lookup
     gt_mapping = {}
@@ -90,18 +85,13 @@ def calculate_metrics_for_results(results: List[Dict[str, Any]], ground_truth: L
             expected = gt_mapping[original_column]
             
             # Calculate individual accuracies
-            accuracy_count += calculate_accuracy(result, expected)
+            accuracy_count += calculate_accuracy(result, expected)  # Column+schema accuracy
             schema_accuracy_count += calculate_schema_accuracy(result, expected)
-            column_accuracy_count += calculate_column_accuracy(result, expected)
-            nothing_compatible_count += calculate_nothing_compatible_accuracy(result, expected)
     
     # Calculate percentages
     metrics = {
-        "accuracy": accuracy_count / total_predictions if total_predictions > 0 else 0.0,
-        "schema_accuracy": schema_accuracy_count / total_predictions if total_predictions > 0 else 0.0,
-        "column_accuracy": column_accuracy_count / total_predictions if total_predictions > 0 else 0.0,
-        "env_accuracy": 0.0,  # Placeholder - would need environment-specific analysis
-        "nothing_compatible_accuracy": nothing_compatible_count / total_predictions if total_predictions > 0 else 0.0
+        "accuracy": accuracy_count / total_predictions if total_predictions > 0 else 0.0,  # Column+schema accuracy
+        "schema_accuracy": schema_accuracy_count / total_predictions if total_predictions > 0 else 0.0
     }
     
     return metrics
@@ -109,7 +99,7 @@ def calculate_metrics_for_results(results: List[Dict[str, Any]], ground_truth: L
 
 def calculate_env_accuracy_by_job_and_env(results_by_job: Dict[str, Dict]) -> Dict[str, Dict[str, float]]:
     """
-    Calculate column+schema accuracy for each environment by grouping results by environment
+    Calculate column+schema accuracy and schema accuracy for each environment by grouping results by environment
     """
     env_metrics = {}
     
@@ -126,16 +116,6 @@ def calculate_env_accuracy_by_job_and_env(results_by_job: Dict[str, Dict]) -> Di
     
     # Calculate accuracy for each environment
     for env_id, predictions in env_results.items():
-        # Load ground truth for this environment
-        # Since ground truth might be specific to table names, we'll calculate based on available mappings
-        # For environment accuracy, we'll calculate accuracy per environment across all tables in that env
-        total_predictions = len(predictions)
-        correct_predictions = 0
-        
-        # Find ground truth for these predictions
-        # This assumes ground truth files are organized by table names within each environment
-        table_names = set(p.original_column for p in predictions)  # This is not quite right; let me update approach
-        
         # Let's recalculate using a different approach - we need to get ground truth for each environment
         # by going through the individual jobs and getting ground truth for each table
         per_env_correct = 0
@@ -174,12 +154,11 @@ def calculate_env_accuracy_by_job_and_env(results_by_job: Dict[str, Dict]) -> Di
                     logger.warning(f"Ground truth file not found for table {table_name} in env {env_id}: {gt_file_path}")
                     continue
         
-        # Calculate environment accuracy
+        # Calculate environment accuracy (column+schema accuracy)
         env_accuracy = per_env_correct / per_env_total if per_env_total > 0 else 0.0
         
-        # Calculate schema and column accuracy for this env
+        # Calculate schema accuracy for this env
         schema_correct = 0
-        column_correct = 0
         
         for job_id, job_data in results_by_job.items():
             if job_data['env_id'] == env_id:
@@ -195,7 +174,7 @@ def calculate_env_accuracy_by_job_and_env(results_by_job: Dict[str, Dict]) -> Di
                         # Create a mapping of original columns to ground truth
                         gt_mapping = {gt.original_column: gt for gt in ground_truth}
                         
-                        # Calculate schema and column accuracy for this table's predictions
+                        # Calculate schema accuracy for this table's predictions
                         for prediction in predictions:
                             original_column = prediction.original_column
                             
@@ -205,18 +184,13 @@ def calculate_env_accuracy_by_job_and_env(results_by_job: Dict[str, Dict]) -> Di
                                 # Schema accuracy
                                 if prediction.fitted_schema == expected.fitted_schema:
                                     schema_correct += 1
-                                
-                                # Column accuracy
-                                if prediction.fitted_column == expected.fitted_column:
-                                    column_correct += 1
                     except Exception as e:
-                        logger.error(f"Error processing ground truth for schema/column calc for table {table_name} in env {env_id}: {str(e)}")
+                        logger.error(f"Error processing ground truth for schema calc for table {table_name} in env {env_id}: {str(e)}")
                         continue
         
         env_metrics[env_id] = {
-            "accuracy": env_accuracy,
+            "accuracy": env_accuracy,  # This is column+schema accuracy
             "schema_accuracy": schema_correct / per_env_total if per_env_total > 0 else 0.0,
-            "column_accuracy": column_correct / per_env_total if per_env_total > 0 else 0.0,
             "total_tests": per_env_total
         }
     
@@ -226,13 +200,13 @@ def calculate_env_accuracy_by_job_and_env(results_by_job: Dict[str, Dict]) -> Di
 def calculate_pipeline_statistics_with_wrong_matches(pipeline_name: str):
     """
     Calculate statistics for a pipeline by comparing database results with ground truth
-    Additionally returns wrong matches for analysis
+    Additionally returns wrong matches for analysis - keeping only column+schema accuracy and schema accuracy
     """
+    # Use a try-finally block to ensure the database connection is always closed
+    postgres_provider.connect()
+    
     try:
         logger.info(f"Calculating statistics with wrong matches for pipeline: {pipeline_name}")
-        
-        # Connect to database
-        postgres_provider.connect()
         
         # Get all pipeline results for the specified pipeline
         with postgres_provider.connection.cursor() as cursor:
@@ -247,13 +221,9 @@ def calculate_pipeline_statistics_with_wrong_matches(pipeline_name: str):
         
         if not db_results:
             logger.warning(f"No pipeline results found in database for pipeline: {pipeline_name}")
-            postgres_provider.disconnect()
             return {
-                "accuracy": 0.0,
+                "accuracy": 0.0,  # This is column+schema accuracy
                 "schema_accuracy": 0.0,
-                "column_accuracy": 0.0,
-                "env_accuracy": 0.0,
-                "nothing_compatible_accuracy": 0.0,
                 "total_tests": 0,
                 "wrong_matches": []
             }
@@ -281,10 +251,8 @@ def calculate_pipeline_statistics_with_wrong_matches(pipeline_name: str):
         
         # Calculate overall metrics across all jobs and collect wrong matches only
         total_predictions = 0
-        total_accuracy = 0.0
+        total_accuracy = 0.0  # This is column+schema accuracy
         total_schema_accuracy = 0.0
-        total_column_accuracy = 0.0
-        total_nothing_compatible_accuracy = 0.0
         all_wrong_matches = []
         
         # For each job, find the corresponding ground truth and calculate metrics
@@ -334,14 +302,6 @@ def calculate_pipeline_statistics_with_wrong_matches(pipeline_name: str):
                             # Accumulate metrics
                             total_accuracy += 1.0 if is_correct else 0.0
                             total_schema_accuracy += 1.0 if prediction.fitted_schema == expected.fitted_schema else 0.0
-                            total_column_accuracy += 1.0 if prediction.fitted_column == expected.fitted_column else 0.0
-                            # For nothing_compatible_accuracy, check if both prediction and ground truth are "nothing"
-                            pred_nothing = not prediction.fitted_column and not prediction.fitted_schema
-                            exp_nothing = not expected.fitted_column and not expected.fitted_schema
-                            if (pred_nothing and exp_nothing) or (not pred_nothing and not exp_nothing and is_correct):
-                                total_nothing_compatible_accuracy += 1.0
-                            else:
-                                total_nothing_compatible_accuracy += 0.0
                 except Exception as e:
                     logger.error(f"Error processing ground truth for {table_name}: {str(e)}")
                     continue
@@ -352,20 +312,14 @@ def calculate_pipeline_statistics_with_wrong_matches(pipeline_name: str):
         # Calculate final averages
         if total_predictions > 0:
             final_metrics = {
-                "accuracy": total_accuracy / total_predictions,
+                "accuracy": total_accuracy / total_predictions,  # Column+schema accuracy
                 "schema_accuracy": total_schema_accuracy / total_predictions,
-                "column_accuracy": total_column_accuracy / total_predictions,
-                "env_accuracy": 0.0,  # Placeholder - will calculate later
-                "nothing_compatible_accuracy": total_nothing_compatible_accuracy / total_predictions,
                 "total_tests": total_predictions
             }
         else:
             final_metrics = {
                 "accuracy": 0.0,
                 "schema_accuracy": 0.0,
-                "column_accuracy": 0.0,
-                "env_accuracy": 0.0,
-                "nothing_compatible_accuracy": 0.0,
                 "total_tests": 0
             }
         
@@ -375,7 +329,7 @@ def calculate_pipeline_statistics_with_wrong_matches(pipeline_name: str):
         # Calculate overall environment accuracy as average of all env accuracies
         if env_metrics:
             total_env_accuracy = sum(env_data['accuracy'] for env_data in env_metrics.values())
-            final_metrics['env_accuracy'] = total_env_accuracy / len(env_metrics)
+            # Note: We don't include env_accuracy in the returned metrics as per the requirement
             
             # Save environment-specific metrics to the new table
             import uuid
@@ -411,8 +365,6 @@ def calculate_pipeline_statistics_with_wrong_matches(pipeline_name: str):
         except Exception as e:
             logger.error(f"Error saving benchmark results: {str(e)}")
         
-        postgres_provider.disconnect()
-        
         logger.info(f"Calculated statistics with wrong matches for pipeline: {pipeline_name}")
         
         # Return metrics and only wrong matches
@@ -422,10 +374,15 @@ def calculate_pipeline_statistics_with_wrong_matches(pipeline_name: str):
         
     except Exception as e:
         logger.error(f"Error calculating statistics for pipeline {pipeline_name}: {str(e)}")
-        if postgres_provider.connection:
-            postgres_provider.disconnect()
         # Re-raise the exception to properly propagate errors
         raise
+    finally:
+        # Always disconnect from the database, even if there's an exception
+        try:
+            postgres_provider.disconnect()
+        except:
+            # If disconnect fails, log it but don't raise another exception
+            logger.warning("Could not disconnect from database in finally block")
 
 
 def calculate_pipeline_statistics(pipeline_name: str) -> Dict[str, float]:
@@ -435,7 +392,7 @@ def calculate_pipeline_statistics(pipeline_name: str) -> Dict[str, float]:
     """
     result = calculate_pipeline_statistics_with_wrong_matches(pipeline_name)
     # Return only the metrics without wrong matches for backward compatibility
-    filtered_result = {k: v for k, v in result.items() if k != 'wrong_matches'}
+    filtered_result = {k: v for k, v in result.items() if k != 'wrong_matches' and k != 'total_predictions'}
     return filtered_result
 
 
@@ -452,11 +409,11 @@ def get_all_pipeline_statistics_with_wrong_matches() -> Dict[str, Dict]:
     """
     Get statistics with wrong matches for all pipelines by comparing database results with ground truth.
     """
+    # Use a try-finally block to ensure the database connection is always closed
+    postgres_provider.connect()
+    
     try:
         logger.info("Getting statistics with wrong matches for all pipelines")
-        
-        # Connect to database to get all distinct pipeline names that have results
-        postgres_provider.connect()
         
         with postgres_provider.connection.cursor() as cursor:
             cursor.execute("SELECT DISTINCT pipeline_name FROM pipeline_results")
@@ -470,16 +427,19 @@ def get_all_pipeline_statistics_with_wrong_matches() -> Dict[str, Dict]:
             if stats:  # Only add if we have results
                 all_stats[pipeline_name] = stats
         
-        postgres_provider.disconnect()
-        
         logger.info(f"Retrieved statistics with wrong matches for {len(all_stats)} pipelines")
         return all_stats
         
     except Exception as e:
         logger.error(f"Error getting statistics with wrong matches for all pipelines: {str(e)}")
-        if postgres_provider.connection:
-            postgres_provider.disconnect()
         return {}
+    finally:
+        # Always disconnect from the database, even if there's an exception
+        try:
+            postgres_provider.disconnect()
+        except:
+            # If disconnect fails, log it but don't raise another exception
+            logger.warning("Could not disconnect from database in finally block")
 
 
 def get_all_pipeline_statistics() -> Dict[str, Dict[str, float]]:
@@ -544,8 +504,6 @@ def get_all_pipeline_env_statistics() -> Dict[str, Dict[str, Dict[str, float]]]:
                     recent_env_stats[env_id] = {
                         'accuracy': float(most_recent['accuracy']) if most_recent['accuracy'] is not None else 0.0,
                         'schema_accuracy': float(most_recent['schema_accuracy']) if most_recent['schema_accuracy'] is not None else 0.0,
-                        'column_accuracy': float(most_recent['column_accuracy']) if most_recent['column_accuracy'] is not None else 0.0,
-                        'nothing_compatible_accuracy': float(most_recent['nothing_compatible_accuracy']) if most_recent['nothing_compatible_accuracy'] is not None else 0.0,
                         'total_tests': most_recent['total_tests'] if most_recent['total_tests'] is not None else 0,
                         'timestamp': most_recent['timestamp']
                     }

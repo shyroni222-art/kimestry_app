@@ -19,16 +19,18 @@ router = APIRouter()
 
 
 @router.post("/benchmark")
-async def run_benchmark(pipeline_name: str = Form(...), pipeline_route: str = Form(...), use_mock: bool = Form(False)):
+async def run_benchmark(pipeline_name: str = Form(...), pipeline_route: str = Form(...), use_mock: bool = Form(False), timeout: int = Form(600)):
     """
     Run benchmark for the n8n pipeline across all environment directories in data/excels/
     The pipeline_name parameter will be used as the name saved in the database
     The pipeline_route parameter specifies which route to use for the n8n pipeline
+    The timeout parameter specifies the timeout in seconds (default 600 seconds = 10 minutes)
     
     Args:
         pipeline_name (str): Name to save in the database for this pipeline run
         pipeline_route (str): The route to use for the n8n pipeline
         use_mock (bool, optional): If True, use mock provider instead of real n8n. Defaults to False.
+        timeout (int, optional): Timeout in seconds for pipeline execution. Defaults to 600 (10 minutes).
     """
     try:
         # Import the benchmark function here to avoid circular import issues
@@ -57,7 +59,7 @@ async def run_benchmark(pipeline_name: str = Form(...), pipeline_route: str = Fo
             
             if not env_directories:
                 # If no environment directories, run with default_env
-                benchmark(pipeline_name, "default_env", n8n_route=pipeline_route)
+                benchmark(pipeline_name, "default_env", n8n_route=pipeline_route, timeout=timeout)
             else:
                 # Run benchmark for each environment directory
                 for env_dir in env_directories:
@@ -67,7 +69,7 @@ async def run_benchmark(pipeline_name: str = Form(...), pipeline_route: str = Fo
                     if excel_files:
                         logger.info(f"Running benchmark for environment: {env_id_from_dir} with {len(excel_files)} Excel files")
                         # Run benchmark for this specific environment
-                        benchmark(pipeline_name, env_id_from_dir, excel_dir=str(env_dir), n8n_route=pipeline_route)
+                        benchmark(pipeline_name, env_id_from_dir, excel_dir=str(env_dir), n8n_route=pipeline_route, timeout=timeout)
                     else:
                         logger.info(f"No Excel files found in environment directory: {env_id_from_dir}")
         
@@ -135,11 +137,13 @@ async def run_pipeline(
     file: UploadFile = File(...),
     pipeline_name: str = Form(...),  # The name to save in the database for this pipeline run
     env_id: str = Form("default_env"),
-    pipeline_route: str = Form(...)  # The route to use for the n8n pipeline
+    pipeline_route: str = Form(...),  # The route to use for the n8n pipeline
+    timeout: int = Form(600)  # Timeout in seconds for pipeline execution (default 600 seconds = 10 minutes)
 ):
     """
     Run the n8n pipeline on an uploaded Excel file using the specified route
     The pipeline_name parameter will be the name saved in the database
+    The timeout parameter specifies the timeout in seconds (default 600 seconds = 10 minutes)
     """
     try:
         # Create a temporary file to save the uploaded Excel file
@@ -162,8 +166,8 @@ async def run_pipeline(
             # Fetch the database schema for the environment
             env_schema = get_database_schema(env_id)
             
-            # Always use the n8n pipeline but with the custom name and route
-            pipeline = N8NPipeline(name=pipeline_name, job_id=file_id, n8n_route=pipeline_route)
+            # Always use the n8n pipeline but with the custom name, route, and timeout
+            pipeline = N8NPipeline(name=pipeline_name, job_id=file_id, n8n_route=pipeline_route, timeout=timeout)
             
             results = pipeline.run(env_id, table_df, env_schema)
             

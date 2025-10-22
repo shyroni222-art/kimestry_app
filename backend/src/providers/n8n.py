@@ -15,7 +15,7 @@ class N8NProvider:
         self.n8n_base_url = n8n_base_url
         self.session = requests.Session()
 
-    def send_excel_file(self, file_path: str, env_id: str, job_id: str, env_schema: dict = None, n8n_route: str = None) -> Optional[Dict[str, Any]]:
+    def send_excel_file(self, file_path: str, env_id: str, job_id: str, env_schema: dict = None, n8n_route: str = None, timeout: int = 600) -> Optional[Dict[str, Any]]:
         """
         Send an Excel file to the n8n webhook endpoint
         """
@@ -39,10 +39,10 @@ class N8NProvider:
                     import json
                     data['env_schema'] = json.dumps(env_schema)  # Convert the schema dict to a JSON string
                 
-                logger.info(f"Sending file {filename} to n8n webhook at {target_url} for job {job_id}")
+                logger.info(f"Sending file {filename} to n8n webhook at {target_url} for job {job_id} with timeout {timeout}s")
                 
                 # Add timeout to prevent hanging
-                response = self.session.post(target_url, files=files, data=data, timeout=300)  # 5 minute timeout
+                response = self.session.post(target_url, files=files, data=data, timeout=timeout)
                 
                 if response.status_code in [200, 201]:
                     response_json = response.json() if response.content else {}
@@ -74,7 +74,7 @@ class N8NProvider:
             logger.error(f"Error sending Excel file to n8n webhook for job {job_id}: {str(e)}")
             return None
 
-    def send_table_data(self, table_data: Dict[str, Any], env_id: str, job_id: str, env_schema: dict = None, n8n_route: str = None) -> Optional[Dict[str, Any]]:
+    def send_table_data(self, table_data: Dict[str, Any], env_id: str, job_id: str, env_schema: dict = None, n8n_route: str = None, timeout: int = 600) -> Optional[Dict[str, Any]]:
         """
         Send table data directly to the n8n webhook endpoint as JSON
         """
@@ -92,10 +92,10 @@ class N8NProvider:
             if env_schema:
                 payload['env_schema'] = env_schema
             
-            logger.info(f"Sending table data to n8n webhook at {target_url} for job {job_id}")
+            logger.info(f"Sending table data to n8n webhook at {target_url} for job {job_id} with timeout {timeout}s")
             
             # Add timeout to prevent hanging
-            response = self.session.post(target_url, json=payload, timeout=300)  # 5 minute timeout
+            response = self.session.post(target_url, json=payload, timeout=timeout)
             
             if response.status_code in [200, 201]:
                 response_json = response.json() if response.content else {}

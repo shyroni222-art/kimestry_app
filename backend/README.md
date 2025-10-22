@@ -87,6 +87,10 @@ python run_kimestry.py run_full_benchmark
 
 For detailed information about all API endpoints, see [backend.md](backend.md).
 
+Key endpoints for the frontend:
+- `GET /api/v1/benchmark` - Get benchmark results for all pipelines (returns column+schema accuracy, schema accuracy, total tests, and wrong matches)
+- `GET /api/v1/benchmark/{pipeline_name}` - Get benchmark results for a specific pipeline (includes detailed wrong matches)
+
 ## Frontend Integration
 
 ### Leaderboard Feature
@@ -149,7 +153,7 @@ For frontend developers looking to create a dashboard or interface for Kimestry:
 - `mick.py`: Integration with external schema API
 
 ### Benchmark System
-- Comprehensive benchmarking with multiple accuracy metrics
+- Comprehensive benchmarking with column+schema accuracy and schema accuracy metrics (removed other metrics)
 - Stores results in PostgreSQL for comparison and analysis
 - Supports execution across multiple environments
 - Returns detailed wrong matches information for analysis

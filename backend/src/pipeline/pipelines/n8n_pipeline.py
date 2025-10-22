@@ -17,9 +17,10 @@ class N8NPipeline(AbstractPipeline):
     In the run method, it sends the Excel file to the n8n webhook for processing.
     """
     
-    def __init__(self, name: str = "n8n_pipeline", job_id: str = "", n8n_route: str = None):
+    def __init__(self, name: str = "n8n_pipeline", job_id: str = "", n8n_route: str = None, timeout: int = 600):
         super().__init__(name, job_id)
         self.n8n_route = n8n_route
+        self.timeout = timeout
         
     def run(self, env_id: str, table_df: pd.DataFrame, env_schema: dict = None) -> List[MatchResultsModel]:
         """
@@ -39,7 +40,7 @@ class N8NPipeline(AbstractPipeline):
             logger.info(f"Sending Excel file to n8n webhook for job {self.job_id}")
             
             # Send the Excel file to the n8n webhook with the environment schema
-            results = n8n_provider.send_excel_file(temp_file_path, env_id, self.job_id, env_schema, self.n8n_route)
+            results = n8n_provider.send_excel_file(temp_file_path, env_id, self.job_id, env_schema, self.n8n_route, self.timeout)
             
             if results is not None:
                 logger.info(f"n8n pipeline completed for job {self.job_id}")

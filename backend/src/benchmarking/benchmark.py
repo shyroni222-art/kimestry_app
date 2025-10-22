@@ -54,18 +54,18 @@ def get_excels_gt(excel_dir: str = None) -> List[MatchResultsModel]:
     return ground_truth_mappings
 
 
-def get_pipeline_by_name(pipeline_name: str, n8n_route: str = None):
+def get_pipeline_by_name(pipeline_name: str, n8n_route: str = None, timeout: int = 600):
     """
     Factory function to get a pipeline instance by its name
     """
     if pipeline_name == "n8n_pipeline":
-        return N8NPipeline(name=pipeline_name, n8n_route=n8n_route)
+        return N8NPipeline(name=pipeline_name, n8n_route=n8n_route, timeout=timeout)
     # Only support n8n pipeline as per requirements
     else:
         raise ValueError(f"Unknown pipeline name: {pipeline_name}")
 
 
-def benchmark(pipeline_name: str, env_id: str = "default_env", excel_dir: str = None, n8n_route: str = None):
+def benchmark(pipeline_name: str, env_id: str = "default_env", excel_dir: str = None, n8n_route: str = None, timeout: int = 600):
     """
     Accepts a pipeline name, gets the correct pipeline.
     Runs the pipeline on all Excel files in the specified directory.
@@ -76,6 +76,7 @@ def benchmark(pipeline_name: str, env_id: str = "default_env", excel_dir: str = 
         env_id: Environment ID to use for the pipeline
         excel_dir: Directory containing Excel files to process. If None, uses default EXCEL_FILES_DIR
         n8n_route: The route to use for the n8n pipeline
+        timeout: Timeout in seconds for pipeline execution (default 600 seconds = 10 minutes)
     """
     logger.info(f"Starting benchmark for pipeline: {pipeline_name}, environment: {env_id}")
     
@@ -83,9 +84,9 @@ def benchmark(pipeline_name: str, env_id: str = "default_env", excel_dir: str = 
         # Connect to database
         postgres_provider.connect()
         
-        # Get the pipeline - create with custom name and route
+        # Get the pipeline - create with custom name, route, and timeout
         from src.pipeline.pipelines.n8n_pipeline import N8NPipeline
-        pipeline = N8NPipeline(name=pipeline_name, n8n_route=n8n_route)
+        pipeline = N8NPipeline(name=pipeline_name, n8n_route=n8n_route, timeout=timeout)
         
         # Determine which directory to process Excel files from
         target_dir = excel_dir if excel_dir else EXCEL_FILES_DIR
