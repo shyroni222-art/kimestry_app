@@ -1,14 +1,9 @@
-#!/usr/bin/env python3
-"""
-Enhanced script to start the Kimestry server with better error handling and debugging capabilities
-"""
 import os
 import sys
 import uvicorn
-import logging
-from src.main import app
 from src.providers.postgress import postgres_provider
 from src.utils.logging_setup import setup_logging
+from src.utils.constants import POSTGRES_CONNECTION_STRING
 
 
 def main():
@@ -17,7 +12,6 @@ def main():
     
     # Set the environment variable if not already set
     if not os.getenv('POSTGRES_CONNECTION_STRING'):
-        from src.utils.constants import POSTGRES_CONNECTION_STRING
         os.environ['POSTGRES_CONNECTION_STRING'] = POSTGRES_CONNECTION_STRING
         
     # Print environment information

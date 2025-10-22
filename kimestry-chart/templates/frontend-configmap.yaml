@@ -1,0 +1,7 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ include "kimestry.frontend.fullname" . }}-config
+data:
+  # Create a file to replace the API URL in the frontend
+  API_BASE_URL: http://{{ include "kimestry.backend.fullname" . }}:{{ .Values.backend.service.port }}/api/v1

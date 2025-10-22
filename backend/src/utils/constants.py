@@ -3,7 +3,6 @@ import os
 # Configuration
 MICK_API_BASE_URL = os.getenv("MICK_API_BASE_URL", "http://localhost:8080/api")
 POSTGRES_CONNECTION_STRING = os.getenv("POSTGRES_CONNECTION_STRING", "postgresql://user:password@localhost:5433/kimestry")
-ELASTICSEARCH_URL = os.getenv("ELASTICSEARCH_URL", "http://localhost:9200")
 N8N_URL = os.getenv("N8N_URL", "https://ronihabaishan.app.n8n.cloud/webhook/schema-matching")
 # N8N_URL = os.getenv("N8N_URL", "https://ronihabaishan.app.n8n.cloud/webhook-test/schema-matching")
 

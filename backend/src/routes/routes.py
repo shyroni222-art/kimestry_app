@@ -1,12 +1,9 @@
 from fastapi import APIRouter, UploadFile, File, Form, HTTPException
 from typing import Optional
-import pandas as pd
 import uuid
 from pathlib import Path
 from psycopg2.extras import RealDictCursor
 
-from src.benchmarking.benchmark import benchmark
-from src.benchmarking.pipeline_statisics import get_pipeline_statistics, get_all_pipeline_statistics
 from src.pipeline.pipelines.n8n_pipeline import N8NPipeline
 from src.utils.func_utils import load_excel_file
 from src.utils.constants import EXCEL_FILES_DIR
@@ -19,7 +16,7 @@ router = APIRouter()
 
 
 @router.post("/benchmark")
-async def run_benchmark(pipeline_name: str = Form(...), pipeline_route: str = Form(...), use_mock: bool = Form(False), timeout: int = Form(600)):
+async def run_benchmark(pipeline_name: str = Form(...), pipeline_route: str = Form(...), timeout: int = Form(600)):
     """
     Run benchmark for the n8n pipeline across all environment directories in data/excels/
     The pipeline_name parameter will be used as the name saved in the database
@@ -37,20 +34,11 @@ async def run_benchmark(pipeline_name: str = Form(...), pipeline_route: str = Fo
         from src.benchmarking.benchmark import benchmark
         
         # Set up the provider to use based on the use_mock flag
-        if use_mock:
-            from src.providers.n8n_mock import mock_n8n_provider
-            from src.providers import n8n
-            # Temporarily replace the n8n provider with mock
-            original_provider = n8n.n8n_provider
-            # Update the mock provider to use the custom route if available
-            n8n.n8n_provider = mock_n8n_provider
-            logger.info("Using mock n8n provider for benchmark")
-        else:
-            from src.providers import n8n
-            # We need to temporarily update n8n provider to use the custom route
-            original_n8n_route = n8n.n8n_provider.n8n_base_url
-            # Don't change the global n8n URL directly, instead modify how the benchmark uses pipelines
-            logger.info(f"Running benchmark using route: {pipeline_route}")
+        from src.providers import n8n
+        # We need to temporarily update n8n provider to use the custom route
+        original_n8n_route = n8n.n8n_provider.n8n_base_url
+        # Don't change the global n8n URL directly, instead modify how the benchmark uses pipelines
+        logger.info(f"Running benchmark using route: {pipeline_route}")
         
         try:
             # Get all environment directories from data/excels/
@@ -73,18 +61,11 @@ async def run_benchmark(pipeline_name: str = Form(...), pipeline_route: str = Fo
                     else:
                         logger.info(f"No Excel files found in environment directory: {env_id_from_dir}")
         
-            return {"status": "success", "message": f"{'Mock ' if use_mock else ''}Benchmark completed for pipeline {pipeline_name}"}
+            return {"status": "success", "message": f"Benchmark completed for pipeline {pipeline_name}"}
         
         finally:
-            # Restore the original provider if we used a mock
-            if use_mock:
-                from src.providers import n8n
-                n8n.n8n_provider = original_provider
-                logger.info("Restored original n8n provider after benchmark")
-            else:
-                from src.providers import n8n
-                # Restore original route if needed
-                logger.info("Completed benchmark run")
+            # Restore original route if needed
+            logger.info("Completed benchmark run")
     
     except Exception as e:
         logger.error(f"Error running benchmark: {str(e)}")
@@ -99,8 +80,8 @@ async def get_benchmark_results(pipeline_name: str):
     Get all benchmark results for a specific pipeline
     """
     try:
-        from src.benchmarking.pipeline_statisics import calculate_pipeline_statistics_with_wrong_matches
-        results = calculate_pipeline_statistics_with_wrong_matches(pipeline_name)
+        from src.benchmarking.pipeline_statistics import get_pipeline_statistics
+        results = get_pipeline_statistics(pipeline_name)
         if not results:
             raise HTTPException(status_code=404, detail=f"No benchmark results found for pipeline {pipeline_name}")
         
@@ -120,7 +101,7 @@ async def get_all_benchmark_results():
     Get benchmark results for all pipelines
     """
     try:
-        from src.benchmarking.pipeline_statisics import get_all_pipeline_statistics_with_wrong_matches
+        from src.benchmarking.pipeline_statistics import get_all_pipeline_statistics_with_wrong_matches
         results = get_all_pipeline_statistics_with_wrong_matches()
         return {"results": results}
     

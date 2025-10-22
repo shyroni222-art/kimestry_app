@@ -25,6 +25,7 @@ import {
 import { Refresh as RefreshIcon, TrendingUp as TrendingUpIcon, ArrowBack as ArrowBackIcon } from '@mui/icons-material';
 import { useParams, useNavigate } from 'react-router-dom';
 import axios from 'axios';
+import Navigation from './Navigation';
 
 // Update this to match your backend server URL when running separately
 const API_BASE_URL = 'http://localhost:8000/api/v1';
@@ -116,8 +117,9 @@ function PipelineDetails() {
   }
 
   return (
+    <div>
     <Container maxWidth="xl" sx={{ py: 4 }}>
-      <Grid container spacing={3}>
+        <Grid container spacing={3}>
         {/* Breadcrumbs */}
         <Grid item xs={12}>
           <Breadcrumbs aria-label="breadcrumb" sx={{ mb: 2 }}>
@@ -188,48 +190,60 @@ function PipelineDetails() {
           <Grid container spacing={2}>
             <Grid item xs={12} sm={4}>
               <Card sx={{ 
-                background: 'linear-gradient(45deg, #2196F3, #21CBF3)', 
-                color: 'white',
-                boxShadow: '0 6px 20px rgba(33, 150, 243, 0.4)',
+                background: 'rgba(255, 255, 255, 0.15)',
+                backdropFilter: 'blur(10px)',
+                borderRadius: '15px',
+                overflow: 'hidden',
+                color: '#fff',
+                border: '1px solid rgba(255,165,0,0.4)',
+                textAlign: 'center'
               }}>
                 <CardContent>
-                  <Typography variant="h6" gutterBottom>Column+Schema Accuracy</Typography>
-                  <Typography variant="h3" component="div">
-                    {pipelineData.accuracy ? (pipelineData.accuracy * 100).toFixed(2) + '%' : '0%'}
+                  <TrendingUpIcon sx={{ fontSize: 50, mb: 1, color: '#FFB74D' }} />
+                  <Typography variant="h6" gutterBottom sx={{ color: '#f5f5f5' }}>Accuracy</Typography>
+                  <Typography variant="h3" component="div" sx={{ fontWeight: 'bold', color: '#FFB74D' }}>
+                    {pipelineData.accuracy ? (pipelineData.accuracy * 100).toFixed(1) + '%' : '0%'}
                   </Typography>
-                  <TrendingUpIcon sx={{ fontSize: 40, mt: 1 }} />
                 </CardContent>
               </Card>
             </Grid>
             
             <Grid item xs={12} sm={4}>
               <Card sx={{ 
-                background: 'linear-gradient(45deg, #4CAF50, #81C784)', 
-                color: 'white',
-                boxShadow: '0 6px 20px rgba(76, 175, 80, 0.4)',
+                background: 'rgba(255, 255, 255, 0.15)',
+                backdropFilter: 'blur(10px)',
+                borderRadius: '15px',
+                overflow: 'hidden',
+                color: '#fff',
+                border: '1px solid rgba(255,165,0,0.4)',
+                textAlign: 'center'
               }}>
                 <CardContent>
-                  <Typography variant="h6" gutterBottom>Schema Accuracy</Typography>
-                  <Typography variant="h3" component="div">
-                    {pipelineData.schema_accuracy ? (pipelineData.schema_accuracy * 100).toFixed(2) + '%' : '0%'}
+                  <TrendingUpIcon sx={{ fontSize: 50, mb: 1, color: '#FFA07A' }} />
+                  <Typography variant="h6" gutterBottom sx={{ color: '#f5f5f5' }}>Schema Accuracy</Typography>
+                  <Typography variant="h3" component="div" sx={{ fontWeight: 'bold', color: '#FFA07A' }}>
+                    {pipelineData.schema_accuracy ? (pipelineData.schema_accuracy * 100).toFixed(1) + '%' : '0%'}
                   </Typography>
-                  <TrendingUpIcon sx={{ fontSize: 40, mt: 1 }} />
                 </CardContent>
               </Card>
             </Grid>
             
             <Grid item xs={12} sm={4}>
               <Card sx={{ 
-                background: 'linear-gradient(45deg, #FF9800, #FFB74D)', 
-                color: 'white',
-                boxShadow: '0 6px 20px rgba(255, 152, 0, 0.4)',
+                background: 'rgba(255, 255, 255, 0.15)',
+                backdropFilter: 'blur(10px)',
+                borderRadius: '15px',
+                overflow: 'hidden',
+                color: '#fff',
+                border: '1px solid rgba(255,165,0,0.4)',
+                textAlign: 'center'
               }}>
                 <CardContent>
-                  <Typography variant="h6" gutterBottom>Total Tests</Typography>
-                  <Typography variant="h3" component="div">
+                  <TrendingUpIcon sx={{ fontSize: 50, mb: 1, color: '#FFA726' }} />
+                  <Typography variant="h6" gutterBottom sx={{ color: '#f5f5f5' }}>Total Tests</Typography>
+                  <Typography variant="h3" component="div" sx={{ fontWeight: 'bold', color: '#FFA726' }}>
                     {pipelineData.total_tests || 0}
                   </Typography>
-                  <TrendingUpIcon sx={{ fontSize: 40, mt: 1 }} />
                 </CardContent>
               </Card>
             </Grid>
@@ -248,7 +262,7 @@ function PipelineDetails() {
         {/* Wrong Matches Section */}
         <Grid item xs={12}>
           <Paper sx={{ 
-            background: 'rgba(255, 255, 255, 0.1)', 
+            background: 'rgba(255, 255, 255, 0.15)', 
             backdropFilter: 'blur(10px)', 
             borderRadius: '15px',
             overflow: 'hidden',
@@ -262,7 +276,7 @@ function PipelineDetails() {
               <TableContainer>
                 <Table sx={{ minWidth: 650 }} aria-label="wrong matches table">
                   <TableHead>
-                    <TableRow sx={{ backgroundColor: 'rgba(0, 0, 0, 0.2)' }}>
+                    <TableRow sx={{ backgroundColor: 'rgba(255, 165, 0, 0.3)' }}>
                       <TableCell sx={{ color: '#fff', fontWeight: 'bold' }}>Original Column</TableCell>
                       <TableCell sx={{ color: '#fff', fontWeight: 'bold' }}>Predicted Column</TableCell>
                       <TableCell sx={{ color: '#fff', fontWeight: 'bold' }}>Predicted Schema</TableCell>
@@ -345,6 +359,7 @@ function PipelineDetails() {
         </Grid>
       </Grid>
     </Container>
+    </div>
   );
 }
 

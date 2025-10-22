@@ -8,7 +8,7 @@ from src.utils.constants import EXCEL_FILES_DIR, GROUND_TRUTH_DIR, RESULTS_DIR
 from src.utils.func_utils import load_excel_file, load_json, create_directory_if_not_exists
 from src.providers.postgress import postgres_provider
 from src.pipeline.pipelines.n8n_pipeline import N8NPipeline
-from src.benchmarking.pipeline_statisics import calculate_metrics_for_results
+from src.benchmarking.pipeline_statistics import calculate_metrics_for_results
 from src.utils.logging_setup import get_logger
 
 logger = get_logger(__name__)
@@ -52,17 +52,6 @@ def get_excels_gt(excel_dir: str = None) -> List[MatchResultsModel]:
             logger.warning(f"Ground truth file not found for {excel_file}: {gt_file}")
     
     return ground_truth_mappings
-
-
-def get_pipeline_by_name(pipeline_name: str, n8n_route: str = None, timeout: int = 600):
-    """
-    Factory function to get a pipeline instance by its name
-    """
-    if pipeline_name == "n8n_pipeline":
-        return N8NPipeline(name=pipeline_name, n8n_route=n8n_route, timeout=timeout)
-    # Only support n8n pipeline as per requirements
-    else:
-        raise ValueError(f"Unknown pipeline name: {pipeline_name}")
 
 
 def benchmark(pipeline_name: str, env_id: str = "default_env", excel_dir: str = None, n8n_route: str = None, timeout: int = 600):
