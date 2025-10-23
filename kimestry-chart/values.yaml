@@ -1,4 +1,4 @@
-# Default values for kimestry.
+# Default values for kimestry-benchmark.
 
 # External PostgreSQL database configuration
 database:
@@ -13,7 +13,7 @@ database:
 backend:
   replicaCount: 1
   image:
-    repository: kimestry-backend
+    repository: kimestry-benchmark-backend
     tag: latest
     pullPolicy: IfNotPresent
   service:
@@ -34,7 +34,7 @@ backend:
 frontend:
   replicaCount: 1
   image:
-    repository: kimestry-frontend
+    repository: kimestry-benchmark-frontend
     tag: latest
     pullPolicy: IfNotPresent
   service:
@@ -61,7 +61,7 @@ ingress:
     # kubernetes.io/ingress.class: nginx
     # kubernetes.io/tls-acme: "true"
   hosts:
-    - host: kimestry.local
+    - host: kimestry-benchmark.local
       paths:
         - path: /
           pathType: Prefix

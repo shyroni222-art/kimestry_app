@@ -1,6 +1,6 @@
 apiVersion: v2
-name: kimestry
-description: A Helm chart for deploying Kimestry - Schema and Column Matching System
+name: kimestry-benchmark
+description: A Helm chart for deploying Kimestry-Benchmark - Schema and Column Matching System
 type: application
 version: 0.1.0
 appVersion: "1.0.0"

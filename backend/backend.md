@@ -1,7 +1,7 @@
-# Kimestry Backend API Documentation
+# Kimestry-Benchmark Backend API Documentation
 
 ## Overview
-Kimestry is an LLM-powered schema and column matching system designed to automatically align user-provided tables (usually Excel files) with the correct database schemas and column names.
+Kimestry-Benchmark is an LLM-powered schema and column matching system designed to automatically align user-provided tables (usually Excel files) with the correct database schemas and column names.
 
 ## API Base URL
 All API endpoints are prefixed with `/api/v1/`
@@ -159,7 +159,7 @@ Health check endpoint.
 ```json
 {
   "status": "healthy",
-  "service": "Kimestry API"
+  "service": "Kimestry-Benchmark API"
 }
 ```
 

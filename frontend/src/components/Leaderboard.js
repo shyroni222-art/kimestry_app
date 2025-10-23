@@ -103,7 +103,7 @@ function Leaderboard() {
               textShadow: '2px 2px 4px rgba(0,0,0,0.5)',
               fontWeight: 'bold'
             }}>
-              Kimestry Pipeline Benchmark Leaderboard
+              Kimestry-Benchmark Pipeline Benchmark Leaderboard
             </Typography>
             <Typography variant="h6" sx={{ color: '#e0e0e0', mb: 2 }}>
              ahhhhhhhhhhhhhhh

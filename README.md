@@ -1,8 +1,8 @@
-# Kimestry - Schema and Column Matching System
+# Kimestry-Benchmark - Schema and Column Matching System
 
 ## Project Overview
 
-This is the main repository for Kimestry - an LLM-powered schema and column matching system designed to automatically align user-provided tables (usually Excel files) with the correct database schemas and column names.
+This is the main repository for Kimestry-Benchmark - an LLM-powered schema and column matching system designed to automatically align user-provided tables (usually Excel files) with the correct database schemas and column names.
 
 ## Project Structure
 

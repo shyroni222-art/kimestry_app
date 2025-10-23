@@ -12,7 +12,7 @@ def setup_logging(
     """
     Set up logging configuration
     """
-    logger = logging.getLogger("kimestry")
+    logger = logging.getLogger("kimestry-benchmark")
     logger.setLevel(getattr(logging, level.upper()))
     
     # Prevent adding multiple handlers if logger already configured
@@ -42,4 +42,4 @@ def get_logger(name: str) -> logging.Logger:
     """
     Get a logger with the specified name
     """
-    return logging.getLogger(f"kimestry.{name}")
+    return logging.getLogger(f"kimestry-benchmark.{name}")

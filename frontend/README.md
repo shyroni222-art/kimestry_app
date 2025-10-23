@@ -1,6 +1,6 @@
-# Kimestry Frontend
+# Kimestry-Benchmark Frontend
 
-This is the React frontend for the Kimestry pipeline benchmark leaderboard application.
+This is the React frontend for the Kimestry-Benchmark pipeline benchmark leaderboard application.
 
 ## Features
 
@@ -45,7 +45,7 @@ The frontend is configured to connect to the backend at `http://localhost:8000/a
 To build just the frontend container:
 
 ```bash
-docker build -t kimestry-frontend .
+docker build -t kimestry-benchmark-frontend .
 ```
 
 ## Configuration

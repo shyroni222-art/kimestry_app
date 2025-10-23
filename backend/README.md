@@ -1,8 +1,8 @@
-# Kimestry - Schema and Column Matching System
+# Kimestry-Benchmark - Schema and Column Matching System
 
 ## Project Overview
 
-Kimestry is an LLM-powered schema and column matching system designed to automatically align user-provided tables (usually Excel files) with the correct database schemas and column names. The system addresses the common problem where users upload local tables whose structure and column names differ from official database schemas.
+Kimestry-Benchmark is an LLM-powered schema and column matching system designed to automatically align user-provided tables (usually Excel files) with the correct database schemas and column names. The system addresses the common problem where users upload local tables whose structure and column names differ from official database schemas.
 
 ## Key Features
 
@@ -35,7 +35,12 @@ Kimestry is an LLM-powered schema and column matching system designed to automat
    pip install -r requirements.txt
    ```
 
-2. **Environment Variables** (Optional)
+2. **Environment Variables**
+   Create a `.env` file in the backend directory to configure the application:
+   ```bash
+   cp .env.example .env
+   ```
+   
    The application uses the following environment variables:
    - `POSTGRES_CONNECTION_STRING` - PostgreSQL connection string (default: `postgresql://user:password@localhost:5433/kimestry`)
    - `MICK_API_BASE_URL` - Base URL for external schema API (default: `http://localhost:8080/api`)
@@ -43,6 +48,7 @@ Kimestry is an LLM-powered schema and column matching system designed to automat
    - `GROUND_TRUTH_DIR` - Directory for ground truth data (default: `./data/ground_truth`)
    - `RESULTS_DIR` - Directory for results (default: `./data/results`)
    - `N8N_URL` - URL for n8n webhook (default: `https://ronihabaishan.app.n8n.cloud/webhook/schema-matching`)
+   - `PORT` - Server port (default: `8000`)
 
 ## Running the Application
 

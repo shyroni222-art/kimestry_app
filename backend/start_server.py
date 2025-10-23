@@ -1,4 +1,7 @@
 import os
+from dotenv import load_dotenv
+load_dotenv()  # Load environment variables from .env file
+
 import sys
 import uvicorn
 from src.providers.postgress import postgres_provider
@@ -8,14 +11,10 @@ from src.utils.constants import POSTGRES_CONNECTION_STRING
 
 def main():
     # Set up logging with maximum detail
-    setup_logging(level="DEBUG", log_file="logs/kimestry.log")
-    
-    # Set the environment variable if not already set
-    if not os.getenv('POSTGRES_CONNECTION_STRING'):
-        os.environ['POSTGRES_CONNECTION_STRING'] = POSTGRES_CONNECTION_STRING
+    setup_logging(level="DEBUG", log_file="logs/kimestry-benchmark.log")
         
     # Print environment information
-    print(f"Starting Kimestry server...")
+    print(f"Starting Kimestry-Benchmark server...")
     print(f"PostgreSQL connection string: {os.getenv('POSTGRES_CONNECTION_STRING', 'postgresql://user:password@localhost:5433/kimestry')}")
     print(f"Port: {int(os.getenv('PORT', 8000))}")
     print(f"Host: 0.0.0.0")

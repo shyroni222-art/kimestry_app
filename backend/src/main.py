@@ -2,6 +2,8 @@ from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from contextlib import asynccontextmanager
 import os
+from dotenv import load_dotenv
+load_dotenv()  # Load environment variables from .env file
 
 from src.routes.routes import router as api_router
 from src.utils.logging_setup import setup_logging
@@ -17,10 +19,10 @@ async def lifespan(app: FastAPI):
     Handles startup and shutdown events
     """
     # Startup
-    print("Starting Kimestry application...")
+    print("Starting Kimestry-Benchmark application...")
     
     # Setup logging
-    setup_logging(level="DEBUG", log_file="logs/kimestry.log")
+    setup_logging(level="DEBUG", log_file="logs/kimestry-benchmark.log")
     
     # Create necessary directories
     create_directory_if_not_exists(RESULTS_DIR)
@@ -40,7 +42,7 @@ async def lifespan(app: FastAPI):
     yield  # This is where the application runs
     
     # Shutdown
-    print("Shutting down Kimestry application...")
+    print("Shutting down Kimestry-Benchmark application...")
     try:
         postgres_provider.disconnect()
         print("Disconnected from PostgreSQL database")
@@ -50,7 +52,7 @@ async def lifespan(app: FastAPI):
 
 # Create FastAPI application
 app = FastAPI(
-    title="Kimestry - Schema and Column Matching System",
+    title="Kimestry-Benchmark - Schema and Column Matching System",
     description="An LLM-powered system for matching Excel tables to database schemas and columns",
     version="1.0.0",
     lifespan=lifespan,
@@ -73,7 +75,7 @@ app.include_router(api_router, prefix="/api/v1", tags=["kimestry"])
 @app.get("/")
 async def root():
     return {
-        "message": "Welcome to Kimestry - Schema and Column Matching System",
+        "message": "Welcome to Kimestry-Benchmark - Schema and Column Matching System",
         "version": "1.0.0",
         "docs": "/docs",
         "redoc": "/redoc"

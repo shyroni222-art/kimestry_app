@@ -20,8 +20,8 @@ const Navigation = () => {
       <Toolbar sx={{ justifyContent: 'space-between', height: '100%' }}>
         <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
           <Avatar 
-            src="/kimestry_logo.png" 
-            alt="Kimestry Logo" 
+            src="/kimestry-benchmark_logo.png" 
+            alt="Kimestry-Benchmark Logo" 
             sx={{ 
               width: 45, 
               height: 45,
@@ -39,7 +39,7 @@ const Navigation = () => {
               textShadow: '1px 1px 2px rgba(0,0,0,0.5)'
             }}
           >
-            KIMESTRY
+            KIMESTRY-BENCHMARK
           </Typography>
         </Box>
         <Box sx={{ display: 'flex', gap: 1 }}>

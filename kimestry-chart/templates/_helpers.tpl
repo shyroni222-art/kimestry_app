@@ -1,14 +1,14 @@
 {{/*
 Expand the name of the chart.
 */}}
-{{- define "kimestry.name" -}}
+{{- define "kimestry-benchmark.name" -}}
 {{- default .Chart.Name .Values.nameOverride | trunc 63 | trimSuffix "-" }}
 {{- end }}
 
 {{/*
 Create a default fully qualified app name.
 */}}
-{{- define "kimestry.fullname" -}}
+{{- define "kimestry-benchmark.fullname" -}}
 {{- if .Values.fullnameOverride }}
 {{- .Values.fullnameOverride | trunc 63 | trimSuffix "-" }}
 {{- else }}
@@ -24,16 +24,16 @@ Create a default fully qualified app name.
 {{/*
 Create chart name and version as used by the chart label.
 */}}
-{{- define "kimestry.chart" -}}
+{{- define "kimestry-benchmark.chart" -}}
 {{- printf "%s-%s" .Chart.Name .Chart.Version | replace "+" "_" | trunc 63 | trimSuffix "-" }}
 {{- end }}
 
 {{/*
 Common labels
 */}}
-{{- define "kimestry.labels" -}}
-helm.sh/chart: {{ include "kimestry.chart" . }}
-{{ include "kimestry.selectorLabels" . }}
+{{- define "kimestry-benchmark.labels" -}}
+helm.sh/chart: {{ include "kimestry-benchmark.chart" . }}
+{{ include "kimestry-benchmark.selectorLabels" . }}
 {{- if .Chart.AppVersion }}
 app.kubernetes.io/version: {{ .Chart.AppVersion | quote }}
 {{- end }}
@@ -43,19 +43,19 @@ app.kubernetes.io/managed-by: {{ .Release.Service }}
 {{/*
 Selector labels
 */}}
-{{- define "kimestry.selectorLabels" -}}
-app.kubernetes.io/name: {{ include "kimestry.name" . }}
+{{- define "kimestry-benchmark.selectorLabels" -}}
+app.kubernetes.io/name: {{ include "kimestry-benchmark.name" . }}
 app.kubernetes.io/instance: {{ .Release.Name }}
 {{- end }}
 
 {{/*
 Backend-specific helpers
 */}}
-{{- define "kimestry.backend.name" -}}
+{{- define "kimestry-benchmark.backend.name" -}}
 {{- default (printf "%s-backend" .Chart.Name) .Values.backend.nameOverride | trunc 63 | trimSuffix "-" }}
 {{- end }}
 
-{{- define "kimestry.backend.fullname" -}}
+{{- define "kimestry-benchmark.backend.fullname" -}}
 {{- if .Values.backend.fullnameOverride }}
 {{- .Values.backend.fullnameOverride | trunc 63 | trimSuffix "-" }}
 {{- else }}
@@ -71,9 +71,9 @@ Backend-specific helpers
 {{/*
 Backend labels
 */}}
-{{- define "kimestry.backend.labels" -}}
-helm.sh/chart: {{ include "kimestry.chart" . }}
-{{ include "kimestry.backend.selectorLabels" . }}
+{{- define "kimestry-benchmark.backend.labels" -}}
+helm.sh/chart: {{ include "kimestry-benchmark.chart" . }}
+{{ include "kimestry-benchmark.backend.selectorLabels" . }}
 {{- if .Chart.AppVersion }}
 app.kubernetes.io/version: {{ .Chart.AppVersion | quote }}
 {{- end }}
@@ -83,19 +83,19 @@ app.kubernetes.io/managed-by: {{ .Release.Service }}
 {{/*
 Backend selector labels
 */}}
-{{- define "kimestry.backend.selectorLabels" -}}
-app.kubernetes.io/name: {{ include "kimestry.backend.name" . }}
+{{- define "kimestry-benchmark.backend.selectorLabels" -}}
+app.kubernetes.io/name: {{ include "kimestry-benchmark.backend.name" . }}
 app.kubernetes.io/instance: {{ .Release.Name }}
 {{- end }}
 
 {{/*
 Frontend-specific helpers
 */}}
-{{- define "kimestry.frontend.name" -}}
+{{- define "kimestry-benchmark.frontend.name" -}}
 {{- default (printf "%s-frontend" .Chart.Name) .Values.frontend.nameOverride | trunc 63 | trimSuffix "-" }}
 {{- end }}
 
-{{- define "kimestry.frontend.fullname" -}}
+{{- define "kimestry-benchmark.frontend.fullname" -}}
 {{- if .Values.frontend.fullnameOverride }}
 {{- .Values.frontend.fullnameOverride | trunc 63 | trimSuffix "-" }}
 {{- else }}
@@ -111,9 +111,9 @@ Frontend-specific helpers
 {{/*
 Frontend labels
 */}}
-{{- define "kimestry.frontend.labels" -}}
-helm.sh/chart: {{ include "kimestry.chart" . }}
-{{ include "kimestry.frontend.selectorLabels" . }}
+{{- define "kimestry-benchmark.frontend.labels" -}}
+helm.sh/chart: {{ include "kimestry-benchmark.chart" . }}
+{{ include "kimestry-benchmark.frontend.selectorLabels" . }}
 {{- if .Chart.AppVersion }}
 app.kubernetes.io/version: {{ .Chart.AppVersion | quote }}
 {{- end }}
@@ -123,7 +123,7 @@ app.kubernetes.io/managed-by: {{ .Release.Service }}
 {{/*
 Frontend selector labels
 */}}
-{{- define "kimestry.frontend.selectorLabels" -}}
-app.kubernetes.io/name: {{ include "kimestry.frontend.name" . }}
+{{- define "kimestry-benchmark.frontend.selectorLabels" -}}
+app.kubernetes.io/name: {{ include "kimestry-benchmark.frontend.name" . }}
 app.kubernetes.io/instance: {{ .Release.Name }}
 {{- end }}
