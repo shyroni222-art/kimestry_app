@@ -26,9 +26,7 @@ import {
 import { Refresh as RefreshIcon, TrendingUp as TrendingUpIcon, Search as SearchIcon } from '@mui/icons-material';
 import { Link } from 'react-router-dom';
 import Navigation from './Navigation';
-
-// Update this to match your backend server URL when running separately
-const API_BASE_URL = 'http://localhost:8000/api/v1';
+import { API_BASE_URL } from '../constants';
 
 function Leaderboard() {
   const [benchmarkData, setBenchmarkData] = useState([]);

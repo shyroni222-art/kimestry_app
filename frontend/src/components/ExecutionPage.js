@@ -16,8 +16,7 @@ import {
 } from '@mui/material';
 import { Upload as UploadIcon } from '@mui/icons-material';
 import axios from 'axios';
-
-const API_BASE_URL = 'http://localhost:8000/api/v1';
+import { API_BASE_URL } from '../constants';
 
 const ExecutionPage = () => {
   // Pipeline execution states

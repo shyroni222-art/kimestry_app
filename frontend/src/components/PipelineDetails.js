@@ -26,9 +26,7 @@ import { Refresh as RefreshIcon, TrendingUp as TrendingUpIcon, ArrowBack as Arro
 import { useParams, useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import Navigation from './Navigation';
-
-// Update this to match your backend server URL when running separately
-const API_BASE_URL = 'http://localhost:8000/api/v1';
+import { API_BASE_URL } from '../constants';
 
 function PipelineDetails() {
   const { pipelineName } = useParams();
