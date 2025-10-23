@@ -81,15 +81,28 @@ For development, you can run the backend and frontend separately:
 3. Start the development server: `npm start`
 4. The frontend will automatically open in your browser at http://localhost:3000
 
-### Docker Mode (Recommended for Production)
-For the full application stack including proxy configuration:
+### Docker Mode (Recommended for Local Development and Testing)
+For the full application stack using Docker Compose (requires external PostgreSQL):
 
 ```bash
 # From the project root directory
+# Make sure to update POSTGRES_CONNECTION_STRING in docker-compose.yml first
 docker-compose up --build
 ```
 
+This uses Dockerfile.backend and Dockerfile.frontend in the root directory.
 The application will be available at http://localhost
+
+### Production Deployment
+For production Kubernetes/OpenShift deployments, use the Helm chart:
+
+```bash
+helm install kimestry ./kimestry-chart --create-namespace --namespace kimestry
+```
+
+For building custom production images:
+Backend: `docker build -f Dockerfile.backend -t kimestry-backend .`
+Frontend: `docker build -f Dockerfile.frontend -t kimestry-frontend .`
 
 ### Environment Configuration
 The application uses environment variables for configuration. For development, you can:

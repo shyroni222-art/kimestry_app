@@ -65,16 +65,58 @@ helm delete kimestry
 
 ## Local Development Setup
 
-For local development, you can use Docker Compose:
+For local development with Docker Compose (requires external PostgreSQL):
 
 ```bash
+# Make sure to update POSTGRES_CONNECTION_STRING in docker-compose.yml first
 docker-compose up --build
 ```
 
+This uses Dockerfile.backend and Dockerfile.frontend from the project root directory.
 The application will be available at:
-- Frontend: http://localhost:3000
-- Backend API: http://localhost:8000
-- Backend API Docs: http://localhost:8000/docs
+- Frontend: http://localhost
+- Backend API: http://localhost/api (proxied to backend service)
+- Backend API Docs: http://localhost/api/docs
+
+## Quick Kubernetes Deployment
+
+For quick Kubernetes deployment using the provided script:
+
+```bash
+# Run from project root
+deploy-kimestry.bat
+```
+
+This will deploy the application using the Helm chart to a Kubernetes cluster.
+
+## OpenShift Deployment
+
+To deploy to OpenShift Container Platform (OCP):
+
+1. Using Helm (recommended):
+```bash
+# From project root
+helm install kimestry ./kimestry-chart --create-namespace --namespace kimestry
+```
+
+2. Alternatively, you can use `oc` CLI directly:
+```bash
+# Create the namespace/project
+oc new-project kimestry
+
+# Install using Helm with OpenShift
+helm install kimestry ./kimestry-chart --namespace kimestry
+```
+
+3. If you need to customize database settings for OpenShift:
+```bash
+# Create a custom values file (e.g., openshift-values.yaml)
+# Then install with custom values:
+helm install kimestry ./kimestry-chart -f openshift-values.yaml --create-namespace --namespace kimestry
+```
+
+Make sure your OpenShift cluster has access to an external PostgreSQL database, 
+or deploy PostgreSQL separately in your cluster before deploying Kimestry.
 
 ## Building Custom Images
 

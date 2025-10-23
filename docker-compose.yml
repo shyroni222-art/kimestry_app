@@ -1,22 +1,6 @@
 version: '3.8'
 
 services:
-  postgres:
-    image: postgres:13
-    environment:
-      POSTGRES_DB: kimestry
-      POSTGRES_USER: postgres
-      POSTGRES_PASSWORD: kimestrydb
-    ports:
-      - "5432:5432"
-    volumes:
-      - postgres_data:/var/lib/postgresql/data
-    healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U postgres"]
-      interval: 10s
-      timeout: 5s
-      retries: 5
-
   backend:
     build:
       context: .
@@ -24,10 +8,8 @@ services:
     ports:
       - "8000:8000"
     environment:
-      - POSTGRES_CONNECTION_STRING=postgresql://postgres:kimestrydb@postgres:5432/kimestry
-    depends_on:
-      postgres:
-        condition: service_healthy
+      # Update this connection string to point to your external PostgreSQL database
+      - POSTGRES_CONNECTION_STRING=postgresql://username:password@your-postgres-host:5432/kimestry
     volumes:
       - ./data:/app/data
 
@@ -41,6 +23,3 @@ services:
       - REACT_APP_API_URL=http://localhost:8000/api/v1
     depends_on:
       - backend
-
-volumes:
-  postgres_data:

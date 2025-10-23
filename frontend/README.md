@@ -16,13 +16,15 @@ This is the React frontend for the Kimestry pipeline benchmark leaderboard appli
 
 ## Running with Docker
 
-The easiest way to run the entire application is using Docker Compose:
+The easiest way to run the entire application is using Docker Compose (requires external PostgreSQL):
 
 ```bash
 # From the project root directory
+# Make sure to update POSTGRES_CONNECTION_STRING in docker-compose.yml first
 docker-compose up --build
 ```
 
+This uses Dockerfile.backend and Dockerfile.frontend from the project root directory.
 The application will be available at:
 - Frontend: http://localhost
 - Backend API: http://localhost/api (proxied to backend service)
