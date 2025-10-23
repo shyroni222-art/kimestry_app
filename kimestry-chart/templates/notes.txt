@@ -5,39 +5,36 @@ Your release "{{ .Release.Name }}" has been deployed.
 To access your application:
 
 1. Get the frontend service URL:
-{{- if .Values.frontend.service.loadBalancerIP }}
-  export FRONTEND_URL={{ .Values.frontend.service.loadBalancerIP }}
-{{- else if contains "LoadBalancer" .Values.frontend.service.type }}
+{{- if contains "LoadBalancer" .Values.frontend.service.type }}
   NOTE: It may take a few minutes for the LoadBalancer IP to be available.
-  Watch the status with: kubectl get svc --namespace {{ .Release.Namespace }} -w {{ include "kimestry.frontend.fullname" . }}
+  Watch the status with: kubectl get svc --namespace {{ .Release.Namespace }} -w {{ include "kimestry-benchmark.frontend.fullname" . }}
 
-  export FRONTEND_URL=$(kubectl get svc --namespace {{ .Release.Namespace }} {{ include "kimestry.frontend.fullname" . }} -o jsonpath='{.status.loadBalancer.ingress[0].ip}')
+  export FRONTEND_URL=$(kubectl get svc --namespace {{ .Release.Namespace }} {{ include "kimestry-benchmark.frontend.fullname" . }} -o jsonpath='{.status.loadBalancer.ingress[0].ip}')
+  echo "Frontend URL: http://$FRONTEND_URL"
+{{- else if contains "NodePort" .Values.frontend.service.type }}
+  export NODE_PORT=$(kubectl get --namespace {{ .Release.Namespace }} -o jsonpath="{.spec.ports[0].nodePort}" services {{ include "kimestry-benchmark.frontend.fullname" . }})
+  export NODE_IP=$(kubectl get nodes --namespace {{ .Release.Namespace }} -o jsonpath="{.items[0].status.addresses[0].address}")
+  echo "Frontend URL: http://$NODE_IP:$NODE_PORT"
 {{- else if contains "ClusterIP" .Values.frontend.service.type }}
-  export FRONTEND_URL=$(kubectl get nodes --namespace {{ .Release.Namespace }} -o jsonpath="{.items[0].status.addresses[0].address}")
-  export FRONTEND_PORT=$(kubectl get svc --namespace {{ .Release.Namespace }} {{ include "kimestry.frontend.fullname" . }} -o jsonpath="{.spec.ports[0].nodePort}")
-  echo "Frontend URL: http://$FRONTEND_URL:$FRONTEND_PORT"
+  export POD_NAME=$(kubectl get pods --namespace {{ .Release.Namespace }} -l "app={{ include "kimestry-benchmark.frontend.fullname" . }}" -o jsonpath="{.items[0].metadata.name}")
+  echo "Visit http://127.0.0.1:8080 to use your application"
+  kubectl --namespace {{ .Release.Namespace }} port-forward $POD_NAME 8080:80
 {{- end }}
 
-2. Get the backend service URL:
-  Backend is available internally at: {{ include "kimestry.backend.fullname" . }}:{{ .Values.backend.service.port }}
-
-3. Access the frontend in your browser at the URL above.
+2. Backend API is available internally at: {{ include "kimestry-benchmark.backend.fullname" . }}:{{ .Values.backend.service.port }}
 
 To check the status of your pods:
   kubectl get pods --namespace {{ .Release.Namespace }}
 
 To view logs:
-  kubectl logs -l app.kubernetes.io/name={{ include "kimestry.backend.name" . }} --namespace {{ .Release.Namespace }}
-  kubectl logs -l app.kubernetes.io/name={{ include "kimestry.frontend.name" . }} --namespace {{ .Release.Namespace }}
+  kubectl logs -l app={{ include "kimestry-benchmark.backend.fullname" . }} --namespace {{ .Release.Namespace }}
+  kubectl logs -l app={{ include "kimestry-benchmark.frontend.fullname" . }} --namespace {{ .Release.Namespace }}
 
 {{- if .Values.ingress.enabled }}
+Ingress is enabled. Access the application at:
 {{- range $host := .Values.ingress.hosts }}
   - http{{ if $.Values.ingress.tls }}s{{ end }}://{{ $host.host }}
 {{- end }}
 {{- end }}
 
-Make sure your external PostgreSQL database is accessible at:
-  Host: {{ .Values.database.host }}
-  Port: {{ .Values.database.port }}
-  Database: {{ .Values.database.database }}
-  Username: {{ .Values.database.username }}
+Note: Ensure your PostgreSQL database is accessible.

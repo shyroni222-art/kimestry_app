@@ -1,6 +1,5 @@
 {{- if .Values.ingress.enabled -}}
-{{- $fullName := include "kimestry.frontend.fullname" . -}}
-{{- $backendName := include "kimestry.backend.fullname" . -}}
+{{- $fullName := include "kimestry-benchmark.fullname" . -}}
 {{- $svcPort := .Values.frontend.service.port -}}
 {{- if and .Values.ingress.className (not (semverCompare ">=1.18-0" .Capabilities.KubeVersion.GitVersion)) }}
   {{- if not (hasKey .Values.ingress.annotations "kubernetes.io/ingress.class") }}
@@ -18,7 +17,7 @@ kind: Ingress
 metadata:
   name: {{ $fullName }}
   labels:
-    {{- include "kimestry.frontend.labels" . | nindent 4 }}
+    {{- include "kimestry-benchmark.labels" . | nindent 4 }}
   {{- with .Values.ingress.annotations }}
   annotations:
     {{- toYaml . | nindent 4 }}
@@ -50,11 +49,11 @@ spec:
             backend:
               {{- if semverCompare ">=1.19-0" $.Capabilities.KubeVersion.GitVersion }}
               service:
-                name: {{ $fullName }}
+                name: {{ include "kimestry-benchmark.frontend.fullname" $ }}
                 port:
                   number: {{ $svcPort }}
               {{- else }}
-              serviceName: {{ $fullName }}
+              serviceName: {{ include "kimestry-benchmark.frontend.fullname" $ }}
               servicePort: {{ $svcPort }}
               {{- end }}
           {{- end }}
